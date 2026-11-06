@@ -1,0 +1,19 @@
+# images.src — human-maintained INPUT. Tags are deliberate choices, reviewed in PRs.
+# scripts/pin-images.sh resolves each to an immutable digest and writes images.lock (the only file secbench.py reads).
+# Never use :latest / :stable here. Bump a tag → re-run `make pin` → commit both files together.
+#
+# key=registry/image:tag              (registry images → resolved to image@sha256:…)
+# key=build:<dir>                     (locally built → recorded as sha256:<image-id>)
+
+trivy=aquasec/trivy:0.64.1
+gitleaks=ghcr.io/gitleaks/gitleaks:v8.27.2
+zap=ghcr.io/zaproxy/zaproxy:2.16.1
+opengrep=build:docker/opengrep
+
+# Tier 2 (management plane) — written to management-plane/images.env as IMAGE_<KEY>
+dd-django=defectdojo/defectdojo-django:2.47.0
+dd-nginx=defectdojo/defectdojo-nginx:2.47.0
+dt-apiserver=dependencytrack/apiserver:4.13.2
+dt-frontend=dependencytrack/frontend:4.13.2
+postgres=postgres:16.9-alpine
+redis=redis:7.4-alpine

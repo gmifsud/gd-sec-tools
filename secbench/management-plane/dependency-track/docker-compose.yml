@@ -1,0 +1,56 @@
+# Dependency-Track — Tier 2 (API server + frontend + PostgreSQL). Images from ../images.env; secrets from ./.env.
+#   docker compose --env-file ../images.env --env-file .env up -d
+# Outbound egress from apiserver is REQUIRED for NVD/OSV/GitHub Advisory mirrors and the EPSS feed; it is the one
+# Tier 2 component that talks to the internet. Restrict with a proxy allowlist if the VM is otherwise air-gapped.
+name: secbench-dependency-track
+
+services:
+  apiserver:
+    image: ${IMAGE_DT_APISERVER}
+    depends_on: [postgres]
+    environment:
+      ALPINE_DATABASE_MODE: external
+      ALPINE_DATABASE_URL: "jdbc:postgresql://postgres:5432/${DT_DATABASE_NAME}"
+      ALPINE_DATABASE_DRIVER: org.postgresql.Driver
+      ALPINE_DATABASE_USERNAME: "${DT_DATABASE_USER}"
+      ALPINE_DATABASE_PASSWORD: "${DT_DATABASE_PASSWORD}"
+      ALPINE_DATABASE_POOL_ENABLED: "true"
+      # Analysers / data feeds
+      ALPINE_CORS_ENABLED: "true"
+      ALPINE_CORS_ALLOW_ORIGIN: "http://127.0.0.1:8082"
+      # GitHub Advisories need a token (set in .env) — leave empty to disable that analyser
+      # Telemetry off
+      TELEMETRY_SUBMISSION_ENABLED_DEFAULT: "false"
+      JAVA_OPTIONS: "-Xmx4g -XX:+UseContainerSupport"
+    deploy:
+      resources:
+        limits:
+          memory: 6g
+    ports:
+      - "127.0.0.1:8081:8080"
+    volumes:
+      - dtrack_data:/data
+    restart: unless-stopped
+
+  frontend:
+    image: ${IMAGE_DT_FRONTEND}
+    depends_on: [apiserver]
+    environment:
+      API_BASE_URL: "http://127.0.0.1:8081"
+    ports:
+      - "127.0.0.1:8082:8080"
+    restart: unless-stopped
+
+  postgres:
+    image: ${IMAGE_POSTGRES}
+    environment:
+      POSTGRES_DB: "${DT_DATABASE_NAME}"
+      POSTGRES_USER: "${DT_DATABASE_USER}"
+      POSTGRES_PASSWORD: "${DT_DATABASE_PASSWORD}"
+    volumes:
+      - dtrack_postgres:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  dtrack_data: {}
+  dtrack_postgres: {}

@@ -1,0 +1,21 @@
+# Gitleaks config — extends the embedded default ruleset; ISL-specific allowlists go here.
+# Finding-level suppressions belong in config/suppressions.toml (tool = "gitleaks", match.fingerprint =
+# "<commit>:<file>:<rule-id>:<line>" as printed in the gitleaks report), never here.
+title = "secbench gitleaks"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Global allowlist — test fixtures and vendored assets"
+paths = [
+  '''(^|/)node_modules/''',
+  '''(^|/)(bin|obj|dist)/''',
+  '''\.(png|jpg|jpeg|gif|svg|ico|woff2?|ttf|eot)$''',
+  '''(^|/)package-lock\.json$''',
+  '''(^|/)yarn\.lock$''',
+]
+regexTarget = "match"
+regexes = [
+  '''EXAMPLE_KEY_DO_NOT_USE''',
+]

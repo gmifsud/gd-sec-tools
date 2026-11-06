@@ -1,0 +1,25 @@
+# suppressions.toml — SINGLE source of truth for every suppressed finding (docs/10-SUPPRESSION-POLICY.md).
+# Tool-native files (.trivyignore.yaml, VEX, .gitleaksignore, opengrep excludes, ZAP IGNORE rows) are GENERATED
+# per run by scripts/gen_suppressions.py. Expired entries are not emitted → the finding comes back.
+#
+# Selector families (exactly one per entry):
+#   fingerprint            secbench/v1 sha256 from the SARIF (opengrep/trivy) or gitleaks fingerprint (gitleaks)
+#   rule_id [+ path]       rule id, optional glob on repo-relative path
+#   path                   glob only (opengrep → --exclude)
+#   vuln_id [+ purl]       CVE/GHSA id, optional package URL narrowing (trivy + dependency-track)
+#   zap_rule               ZAP plugin id (→ IGNORE row)
+schema = "secbench/suppressions/v1"
+
+# Example (delete once real entries exist). Lint: `python3 secbench.py check`
+[[entries]]
+id = "SUP-0001"
+tool = "trivy"
+status = "not_affected"
+owner = "gman@isl"
+justification = "EXAMPLE ENTRY — vulnerable code path not reachable; TypeNameHandling never enabled (ADR-017)"
+created = 2026-11-06
+expires = 2027-02-04
+ticket = "AB#0000"
+[entries.match]
+vuln_id = "CVE-2024-21907"
+purl = "pkg:nuget/Newtonsoft.Json@12.0.3"

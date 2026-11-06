@@ -1,0 +1,25 @@
+# Trivy config (mounted read-only at /cfg/trivy.yaml). Networking/offline/telemetry flags live on the CLI in
+# secbench.py so they are visible in run.json; this file holds scan-shape settings only.
+severity:
+  - UNKNOWN
+  - LOW
+  - MEDIUM
+  - HIGH
+  - CRITICAL
+timeout: 25m
+skip-dirs:
+  - node_modules
+  - "**/node_modules"
+  - .git
+  - bin
+  - obj
+  - dist
+  - .angular
+  - android/build
+  - ios/Pods
+misconfiguration:
+  include-non-failures: false
+secret:
+  # ISL-specific secret patterns can be added via a custom config: secret.config: /cfg/trivy-secret.yaml
+scan:
+  parallel: 4

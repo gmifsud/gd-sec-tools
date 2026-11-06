@@ -1,0 +1,9 @@
+.env
+management-plane/*/.env
+cache/
+out/
+config/opengrep/rules/
+docs/runs/*.md
+!docs/runs/.gitkeep
+**/image.tar
+__pycache__/

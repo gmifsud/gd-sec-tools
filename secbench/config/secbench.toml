@@ -1,0 +1,47 @@
+# secbench.toml — run defaults. (TOML, not YAML: stdlib tomllib keeps secbench.py dependency-free — amends §2.1.)
+
+[scan]
+default_tools = ["opengrep", "trivy", "gitleaks"]   # zap is opt-in (needs --target-url)
+mode = "observe"                                     # observe | gate   (env SECBENCH_MODE or --mode override)
+gate_min_security_severity = 7.0                     # unsuppressed finding with security-severity >= this fails gate mode
+
+[severity]
+# security-severity by (SARIF level, rule precision). Normaliser injects these into rule/result properties.
+# DefectDojo thresholds: Critical >= 9, High >= 7, Medium >= 4, Low < 4.
+gate_threshold = 7.0
+secret_override = 8.5
+[severity.error]
+very-high = 8.5
+high = 7.5
+medium = 6.5
+low = 5.0
+unknown = 7.0
+[severity.warning]
+very-high = 5.5
+high = 5.0
+medium = 4.5
+low = 4.0
+unknown = 5.0
+[severity.note]
+very-high = 2.5
+high = 2.0
+medium = 2.0
+low = 1.0
+unknown = 2.0
+
+[opengrep]
+timeout_s = 1800
+rule_timeout_s = 30
+max_target_bytes = 1000000
+
+[trivy]
+timeout_s = 1800
+
+[gitleaks]
+timeout_s = 1800
+
+[zap]
+format = "openapi"        # openapi | soap | graphql
+max_minutes = 15
+safe_mode = true          # -S: no active attacks with side-effects on first runs; flip per target once trusted
+network = "auto"          # auto → host on Linux, bridge + host.docker.internal on Docker Desktop

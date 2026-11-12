@@ -1,0 +1,8 @@
+
+qualys/
+# agentforge generated
+.claude/skills
+.codex/skills
+.agents/skills
+.gemini/skills
+.cursor/skills

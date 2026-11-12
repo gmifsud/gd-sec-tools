@@ -28,7 +28,7 @@ facts asserted in the design that must be confirmed against the pinned tool vers
 | 0.6 | Prefetch DBs into `cache/` (only networked scanner step) | `make prefetch` | `du -sh cache/trivy` ≈ 600 MB+ |
 | 0.7 | Lint | `make check` | 0 errors |
 
-⚠ 0.4: `aquasec/trivy:0.64.1`, `gitleaks v8.27.2`, `zaproxy 2.16.1`, DD `2.47.0`, DT `4.13.2` are **starting tags** chosen at design time; bump to current before pinning. Opengrep binary SHA-256 in `docker/opengrep/Dockerfile` is for `v1.30.0` `opengrep_manylinux_x86` — re-verify against the release page (and cosign-verify the `.cert`/`.sig` if present) before building.
+⚠ 0.4: tags in `images.src` were bumped to current releases on 2026-11-12 (Trivy `0.76.2`, Gitleaks `v8.30.1`, ZAP `2.17.0`, DD `3.5.101`, DT `4.14.6`); re-check if pinning more than a week later. Never pin Trivy `0.69.4`–`0.69.6` (CVE-2026-33634). Opengrep binary SHA-256 in `docker/opengrep/Dockerfile` is for `v1.30.0` `opengrep_manylinux_x86` — re-verify against the release page (and cosign-verify the `.cert`/`.sig` if present) before building.
 
 ## Phase 1 — Steel thread: Trivy + Opengrep → SARIF → VS Code (≈ ½ day)
 
